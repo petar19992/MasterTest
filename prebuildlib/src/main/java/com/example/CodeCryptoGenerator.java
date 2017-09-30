@@ -1,12 +1,14 @@
 package com.example;
 
+import com.example.classProperties.Function;
+import com.example.classProperties.ScannedClass;
 import com.example.compiler.InMemoryJavaCompiler;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,15 +43,62 @@ public class CodeCryptoGenerator
                 stringBuffer.append(line + "\n");
                 System.out.println(line);
             }
-            String className="com.example.petar.mastertest.MainActivity";
-            Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile("com.example.petar.mastertest.MainActivity", stringBuffer.toString());
-            for (Class c = helloClass; c != null; c = c.getSuperclass()) {
-                for (Method method : c.getDeclaredMethods()) {
-                    if (c.getName().equals(className)) {
-                        System.out.println(c.getName() + "." + method.getName());
+
+            String classAsString = stringBuffer.toString();
+            String className = "com.example.petar.mastertest.MainActivity";
+            Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile("com.example.petar.mastertest.MainActivity", classAsString);
+
+            ScannedClass scannedClass = new ScannedClass();
+            scannedClass.realClass = helloClass;
+            Field[] fields = helloClass.getDeclaredFields();
+            if (fields != null)
+            {
+                for (int i = 0; i < fields.length; i++)
+                {
+                    scannedClass.addVariable(fields[i]);
+                }
+            }
+            StringBuffer ouput=new StringBuffer();
+            for (Class c = helloClass; c != null; c = c.getSuperclass())
+            {
+                for (Method method : c.getDeclaredMethods())
+                {
+                    if (c.getName().equals(className))
+                    {
+                        for (int i = 0; i < lines.size(); i++)
+                        {
+                            scannedClass.methods.add(method);
+                        }
                     }
                 }
             }
+            for(String line: lines)
+            {
+                for(int i=0;i<scannedClass.methods.size();i++)
+                {
+                    Method method=scannedClass.methods.get(i);
+                    if (!line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super." + method.getGenericReturnType() + " " + method.getName() + "("))
+                    {
+
+                        for (int j = -1; (j = line.indexOf(method.getName() + "(", j + 1)) != -1; j++)
+                        {
+                            System.out.println(method.getName() + ": Line: " + (i + 1) + ", col: " + (j + 1));
+                            Function function = getStringForChange(method.getName(), j, line);
+                            if (function != null)
+                            {
+
+                            }
+                        }
+                    }
+                }
+                ouput.append(line);
+            }
+            File myFoo = new File("foo.log");
+            FileOutputStream fooStream = new FileOutputStream(myFoo, false); // true to append
+            // false to overwrite.
+            byte[] myBytes = "New Contents\n".getBytes()
+            fooStream.write(myBytes);
+            fooStream.close();
             System.out.println("PROBAAAAAAAAAAAAAAAAAAAA");
 
         } catch (MalformedURLException e)
@@ -62,5 +111,38 @@ public class CodeCryptoGenerator
         {
             e.printStackTrace();
         }
+    }
+
+    public static Function getStringForChange(String methodName, int startIndex, String line)
+    {
+        char[] lineChar = line.toCharArray();
+        int counter = 1;
+        int i = startIndex + methodName.length() + 1;
+        for (; i < line.length(); i++)
+        {
+            if (lineChar[i] == '(')
+            {
+                counter++;
+            }
+            else if (lineChar[i] == ')')
+            {
+                counter--;
+            }
+            if (counter == 0)
+            {
+                Function function = new Function();
+                function.name = methodName;
+                String[] args = line.substring(startIndex + methodName.length() + 1, i).split(",");
+                if (args != null)
+                {
+                    for (int j = 0; j < args.length; j++)
+                    {
+                        function.args.add(args[j]);
+                    }
+                }
+                return function;
+            }
+        }
+        return null;
     }
 }
