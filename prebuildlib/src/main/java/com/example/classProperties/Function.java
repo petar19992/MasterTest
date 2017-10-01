@@ -18,7 +18,7 @@ public class Function
     {
         this.startIndex = i;
         this.endIndex = i1+1;
-        String arguments = line.substring(startIndex, endIndex-1);
+        String arguments = line.substring(startIndex+name.length()+1, endIndex-1);
         if (arguments.length() > 0)
         {
             String[] args = arguments.split(",");

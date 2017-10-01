@@ -1,6 +1,6 @@
 package com.example;
-
 import com.example.classProperties.Function;
+import com.example.classProperties.Par;
 import com.example.classProperties.ScannedClass;
 import com.example.compiler.InMemoryJavaCompiler;
 
@@ -77,7 +77,7 @@ public class CodeCryptoGenerator
                 for (int i = 0; i < scannedClass.methods.size(); i++)
                 {
                     Method method = scannedClass.methods.get(i);
-                    if (!line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super." + method.getGenericReturnType() + " " + method.getName() + "("))
+                    if (line.contains(method.getName())&&!line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super."+ method.getName() + "("))
                     {
 
                         for (int j = -1; (j = line.indexOf(method.getName() + "(", j + 1)) != -1; j++)
@@ -86,7 +86,9 @@ public class CodeCryptoGenerator
                             Function function = getStringForChange(method.getName(), j, line);
                             if (function != null)
                             {
-                                line = scannedClass.commitChange(line, function);
+                                Par pair = scannedClass.commitChange(line, function);
+                                line = pair.linija;
+//                                j = pair.j;
 //                                j = -1;
                             }
                         }
@@ -130,7 +132,7 @@ public class CodeCryptoGenerator
             {
                 Function function = new Function();
                 function.name = methodName;
-                function.setArgs(line, startIndex + methodName.length() + 1, i);
+                function.setArgs(line, startIndex, i);
                 return function;
             }
         }

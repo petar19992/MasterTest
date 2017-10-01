@@ -1,5 +1,4 @@
 package com.example.classProperties;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class ScannedClass
         variables.add(field);
     }
 
-    public String commitChange(String line, Function function)
+    public Par commitChange(String line, Function function)
     {
         assetFile.append(function.name).append(";");
         for (int i = 0; i < function.args.size(); i++)
@@ -29,7 +28,9 @@ public class ScannedClass
             assetFile.append(function.args.get(i)).append(",");
         }
         assetFile.append("\n");
-        line=line.replace(line.substring(function.startIndex,function.endIndex-1),"ReflexHelper.getInstance().callFunc("+(assetLineCount++)+")");
-        return line;
+        String newLine="ReflexHelper.getInstance().callFunc("+(assetLineCount++)+")";
+        line=line.replace(line.substring(function.startIndex,function.endIndex),newLine);
+        int lastJ=line.lastIndexOf(newLine);
+        return new Par(line,lastJ);
     }
 }

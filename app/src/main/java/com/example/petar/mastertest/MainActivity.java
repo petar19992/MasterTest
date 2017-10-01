@@ -39,12 +39,12 @@ public class MainActivity
         resultLabel = (TextView) findViewById(R.id.resultLabel);
         factorielBtn = (Button) findViewById(R.id.factorielBtn);
         randomMultipleBtn = (Button) findViewById(R.id.randomMultipleBtn);*/
-        resultTxtView = (TextView) findViewById(getResources().getIdentifier("resultTxtView","id",getPackageName()));
-        inputTxtView = (EditText) findViewById(getResources().getIdentifier("inputTxtView","id",getPackageName()));
-        resultLabel = (TextView) findViewById(getResources().getIdentifier("resultLabel","id",getPackageName()));
-        factorielBtn = (Button) findViewById(getResources().getIdentifier("factorielBtn","id",getPackageName()));
-        randomMultipleBtn = (Button) findViewById(getResources().getIdentifier("randomMultipleBtn","id",getPackageName()));
-        randomFunc = (Button) findViewById(getResources().getIdentifier("randomFunc","id",getPackageName()));
+        resultTxtView = (TextView) findViewById(getResources().getIdentifier("resultTxtView", "id", getPackageName()));
+        inputTxtView = (EditText) findViewById(getResources().getIdentifier("inputTxtView", "id", getPackageName()));
+        resultLabel = (TextView) findViewById(getResources().getIdentifier("resultLabel", "id", getPackageName()));
+        factorielBtn = (Button) findViewById(getResources().getIdentifier("factorielBtn", "id", getPackageName()));
+        randomMultipleBtn = (Button) findViewById(getResources().getIdentifier("randomMultipleBtn", "id", getPackageName()));
+        randomFunc = (Button) findViewById(getResources().getIdentifier("randomFunc", "id", getPackageName()));
         factorielBtn.setOnClickListener(this);
         randomMultipleBtn.setOnClickListener(this);
         randomFunc.setOnClickListener(this);
@@ -64,6 +64,7 @@ public class MainActivity
     {
         return a * randomNumber;
     }
+
     @Override
     public void onClick(View v)
     {
@@ -90,12 +91,11 @@ public class MainActivity
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(getResources().getIdentifier("activity_main","layout",getPackageName()));
+        setContentView(getResources().getIdentifier("activity_main", "layout", getPackageName()));
         findViews();
     }
 }
