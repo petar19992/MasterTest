@@ -17,6 +17,7 @@ public class ScannedClass
     public Class realClass;
     public ArrayList<Field> variables = new ArrayList<>();
     public ArrayList<Method> methods = new ArrayList<>();
+    public String className="MainActivity";
 
     public void addVariable(Field field)
     {
@@ -38,11 +39,11 @@ public class ScannedClass
         String newLine = "";
         if (function.returnType != null && !function.returnType.getName().equals("void"))
         {
-            newLine = "((" + function.returnType.getName() + ")ReflexHelper.getInstance().callFunc(" + (assetLineCount++) + "))";
+            newLine = "((" + function.returnType.getName() + ")ReflexHelper.getInstance().callFunc("+className+".this," + (assetLineCount++) + "))";
         }
         else
         {
-            newLine = "ReflexHelper.getInstance().callFunc(" + (assetLineCount++) + ")";
+            newLine = "ReflexHelper.getInstance().callFunc(" +className+".this," + (assetLineCount++) + ")";
         }
         line = line.replace(line.substring(function.startIndex, function.endIndex), newLine);
         int lastJ = line.lastIndexOf(newLine);

@@ -52,6 +52,7 @@ public class CodeCryptoGenerator
             Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile("com.example.petar.mastertest.MainActivity", classAsString);
 
             ScannedClass scannedClass = new ScannedClass();
+            scannedClass.className=helloClass.getName();
             scannedClass.realClass = helloClass;
             Field[] fields = helloClass.getDeclaredFields();
             if (fields != null)

@@ -20,7 +20,7 @@ public class MainActivity
     private Button randomMultipleBtn;
     private Button randomFunc;
 
-    private int factorielFunc(int a)
+    /*private int factorielFunc(int a)
     {
         if (a != 1)
         {
@@ -30,9 +30,9 @@ public class MainActivity
         {
             return 1;
         }
-    }
+    }*/
 
-    private void findViews()
+    public void findViews()
     {
        /* resultTxtView = (TextView) findViewById(R.id.resultTxtView);
         inputTxtView = (EditText) findViewById(R.id.inputTxtView);
@@ -50,41 +50,43 @@ public class MainActivity
         randomFunc.setOnClickListener(this);
     }
 
-    private int getRandomNumber(int limit)
+    public int getRandomNumber(int limit)
     {
         return new Random().nextInt(limit);
     }
 
-    private int randomFuncion(int number)
+    public int randomFuncion(int number)
     {
-        return factorielFunc(number) + 5 + randomMultiple(number, 4);
+        return new Random().nextInt(number) + 5 + new Random().nextInt(number);
     }
 
-    private int randomMultiple(int a, int randomNumber)
+    public int randomMultiple(int a, int randomNumber)
     {
         return a * randomNumber;
     }
 
+    int number;
+    int randomNuber;
     @Override
     public void onClick(View v)
     {
         String text = inputTxtView.getText().toString();
         if (text != null && !text.equals(""))
         {
-            int number = Integer.valueOf(text);
+            number = Integer.valueOf(text);
             int result = 0;
             if (v == factorielBtn)
             {
-                result = factorielFunc(number);
+                result = ((int)ReflexHelper.getInstance().callFunc(com.example.petar.mastertest.MainActivity.this,0));
             }
             else if (v == randomMultipleBtn)
             {
-                int randomNuber = getRandomNumber(100);
-                result = randomMultiple(number, randomNuber);
+                randomNuber = ((int)ReflexHelper.getInstance().callFunc(com.example.petar.mastertest.MainActivity.this,1));
+                result = ((int)ReflexHelper.getInstance().callFunc(com.example.petar.mastertest.MainActivity.this,2));
             }
             else if (v == randomFunc)
             {
-                result = randomFuncion(number);
+                result = ((int)ReflexHelper.getInstance().callFunc(com.example.petar.mastertest.MainActivity.this,3));
             }
             resultTxtView.setText("" + result);
         }
@@ -96,6 +98,6 @@ public class MainActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(getResources().getIdentifier("activity_main", "layout", getPackageName()));
-        findViews();
+        ReflexHelper.getInstance().callFunc(com.example.petar.mastertest.MainActivity.this,4);
     }
 }
