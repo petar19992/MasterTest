@@ -5,6 +5,7 @@ import com.example.classProperties.ScannedClass;
 import com.example.compiler.InMemoryJavaCompiler;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -58,25 +59,24 @@ public class CodeCryptoGenerator
                     scannedClass.addVariable(fields[i]);
                 }
             }
-            StringBuffer ouput=new StringBuffer();
+            StringBuffer ouput = new StringBuffer();
             for (Class c = helloClass; c != null; c = c.getSuperclass())
             {
                 for (Method method : c.getDeclaredMethods())
                 {
                     if (c.getName().equals(className))
                     {
-                        for (int i = 0; i < lines.size(); i++)
-                        {
-                            scannedClass.methods.add(method);
-                        }
+                        scannedClass.methods.add(method);
                     }
                 }
             }
-            for(String line: lines)
+            File myFoo = new File("D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity2.java");
+            FileOutputStream fooStream = new FileOutputStream(myFoo, false); // true to append
+            for (String line : lines)
             {
-                for(int i=0;i<scannedClass.methods.size();i++)
+                for (int i = 0; i < scannedClass.methods.size(); i++)
                 {
-                    Method method=scannedClass.methods.get(i);
+                    Method method = scannedClass.methods.get(i);
                     if (!line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super." + method.getGenericReturnType() + " " + method.getName() + "("))
                     {
 
@@ -86,18 +86,16 @@ public class CodeCryptoGenerator
                             Function function = getStringForChange(method.getName(), j, line);
                             if (function != null)
                             {
-
+                                line = scannedClass.commitChange(line, function);
+//                                j = -1;
                             }
                         }
                     }
                 }
-                ouput.append(line);
+                fooStream.write(line.getBytes());
+                fooStream.write("\n".getBytes());
+                ouput.append(line)/*.append("\n")*/;
             }
-            File myFoo = new File("foo.log");
-            FileOutputStream fooStream = new FileOutputStream(myFoo, false); // true to append
-            // false to overwrite.
-            byte[] myBytes = "New Contents\n".getBytes()
-            fooStream.write(myBytes);
             fooStream.close();
             System.out.println("PROBAAAAAAAAAAAAAAAAAAAA");
 
@@ -132,14 +130,7 @@ public class CodeCryptoGenerator
             {
                 Function function = new Function();
                 function.name = methodName;
-                String[] args = line.substring(startIndex + methodName.length() + 1, i).split(",");
-                if (args != null)
-                {
-                    for (int j = 0; j < args.length; j++)
-                    {
-                        function.args.add(args[j]);
-                    }
-                }
+                function.setArgs(line, startIndex + methodName.length() + 1, i);
                 return function;
             }
         }

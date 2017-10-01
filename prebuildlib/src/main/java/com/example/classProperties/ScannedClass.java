@@ -10,13 +10,26 @@ import java.util.ArrayList;
 
 public class ScannedClass
 {
+    StringBuffer assetFile = new StringBuffer();
+    int assetLineCount = 0;
     public Class realClass;
-    public ArrayList<Field> variables=new ArrayList<>();
-    public ArrayList<Method> methods=new ArrayList<>();
+    public ArrayList<Field> variables = new ArrayList<>();
+    public ArrayList<Method> methods = new ArrayList<>();
 
     public void addVariable(Field field)
     {
         variables.add(field);
     }
 
+    public String commitChange(String line, Function function)
+    {
+        assetFile.append(function.name).append(";");
+        for (int i = 0; i < function.args.size(); i++)
+        {
+            assetFile.append(function.args.get(i)).append(",");
+        }
+        assetFile.append("\n");
+        line=line.replace(line.substring(function.startIndex,function.endIndex-1),"ReflexHelper.getInstance().callFunc("+(assetLineCount++)+")");
+        return line;
+    }
 }
