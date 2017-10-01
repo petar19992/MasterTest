@@ -1,4 +1,7 @@
 package com.example.classProperties;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,15 +25,38 @@ public class ScannedClass
 
     public Par commitChange(String line, Function function)
     {
+        if (function.returnType != null)
+        {
+            assetFile.append(function.returnType.getName()).append(";");
+        }
         assetFile.append(function.name).append(";");
         for (int i = 0; i < function.args.size(); i++)
         {
             assetFile.append(function.args.get(i)).append(",");
         }
         assetFile.append("\n");
-        String newLine="ReflexHelper.getInstance().callFunc("+(assetLineCount++)+")";
-        line=line.replace(line.substring(function.startIndex,function.endIndex),newLine);
-        int lastJ=line.lastIndexOf(newLine);
-        return new Par(line,lastJ);
+        String newLine = "";
+        if (function.returnType != null && !function.returnType.getName().equals("void"))
+        {
+            newLine = "((" + function.returnType.getName() + ")ReflexHelper.getInstance().callFunc(" + (assetLineCount++) + "))";
+        }
+        else
+        {
+            newLine = "ReflexHelper.getInstance().callFunc(" + (assetLineCount++) + ")";
+        }
+        line = line.replace(line.substring(function.startIndex, function.endIndex), newLine);
+        int lastJ = line.lastIndexOf(newLine);
+        return new Par(line, lastJ);
+    }
+
+    public void writeAsset(FileOutputStream fooStream)
+    {
+        try
+        {
+            fooStream.write(assetFile.toString().getBytes());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

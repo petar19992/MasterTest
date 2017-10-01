@@ -1,4 +1,5 @@
 package com.example;
+
 import com.example.classProperties.Function;
 import com.example.classProperties.Par;
 import com.example.classProperties.ScannedClass;
@@ -19,6 +20,7 @@ public class CodeCryptoGenerator
 {
     public static void main(String[] args)
     {
+        String assets="D:\\ASProjects\\MasterTest\\app\\src\\main\\assets";
         if (args == null || args.length < 1)
         {
             //com.example.petar.mastertest.
@@ -77,7 +79,7 @@ public class CodeCryptoGenerator
                 for (int i = 0; i < scannedClass.methods.size(); i++)
                 {
                     Method method = scannedClass.methods.get(i);
-                    if (line.contains(method.getName())&&!line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super."+ method.getName() + "("))
+                    if (line.contains(method.getName()) && !line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super." + method.getName() + "("))
                     {
 
                         for (int j = -1; (j = line.indexOf(method.getName() + "(", j + 1)) != -1; j++)
@@ -86,9 +88,10 @@ public class CodeCryptoGenerator
                             Function function = getStringForChange(method.getName(), j, line);
                             if (function != null)
                             {
+                                function.returnType = method.getReturnType();
                                 Par pair = scannedClass.commitChange(line, function);
                                 line = pair.linija;
-//                                j = pair.j;
+                                j = pair.j;
 //                                j = -1;
                             }
                         }
@@ -99,6 +102,14 @@ public class CodeCryptoGenerator
                 ouput.append(line)/*.append("\n")*/;
             }
             fooStream.close();
+            myFoo = new File(assets);
+            if(!myFoo.exists())
+                myFoo.mkdirs();
+            myFoo=new File(assets+"\\maste.txt");
+            fooStream = new FileOutputStream(myFoo, false);
+            scannedClass.writeAsset(fooStream);
+            fooStream.close();
+
             System.out.println("PROBAAAAAAAAAAAAAAAAAAAA");
 
         } catch (MalformedURLException e)

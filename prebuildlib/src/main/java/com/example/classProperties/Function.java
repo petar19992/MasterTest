@@ -9,6 +9,7 @@ import java.util.Collections;
 
 public class Function
 {
+    public Class<?> returnType;
     public String name;
     public ArrayList<String> args = new ArrayList<>();
     public int startIndex;

@@ -21,7 +21,7 @@ public class ReflexHelper
 
     private static ReflexHelper instance;
 
-    public int callFunc(int num)
+    public Object callFunc(int num)
     {
         return 0;
     }
