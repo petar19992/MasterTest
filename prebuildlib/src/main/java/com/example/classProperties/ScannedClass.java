@@ -1,5 +1,7 @@
 package com.example.classProperties;
 
+import com.example.AESenc;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -12,12 +14,12 @@ import java.util.ArrayList;
 
 public class ScannedClass
 {
-    StringBuffer assetFile = new StringBuffer();
-    int assetLineCount = 0;
-    public Class realClass;
-    public ArrayList<Field> variables = new ArrayList<>();
-    public ArrayList<Method> methods = new ArrayList<>();
-    public String className="MainActivity";
+    StringBuffer assetFile = new StringBuffer(); //Ovde se cuva sadrzaj koji ce se kriptovan upisati u assets fajl
+    int assetLineCount = 0; //Brojimo koliko smo linija upisali u assets fajl
+    public Class realClass; //Instanca klase
+    public ArrayList<Field> variables = new ArrayList<>(); //Sve promenljive koje su eksplicitno pisane u ovoj klasi a nisu nasledjene
+    public ArrayList<Method> methods = new ArrayList<>(); //Sve metode koje su eksplicitno pisane u ovoj klasi a nisu nasledjene
+    public String className = "MainActivity"; //Ime klase
 
     public void addVariable(Field field)
     {
@@ -39,11 +41,11 @@ public class ScannedClass
         String newLine = "";
         if (function.returnType != null && !function.returnType.getName().equals("void"))
         {
-            newLine = "((" + function.returnType.getName() + ")ReflexHelper.getInstance().callFunc("+className+".this," + (assetLineCount++) + "))";
+            newLine = "((" + function.returnType.getName() + ")ReflexHelper.getInstance().callFunc(" + className + ".this," + (assetLineCount++) + "))";
         }
         else
         {
-            newLine = "ReflexHelper.getInstance().callFunc(" +className+".this," + (assetLineCount++) + ")";
+            newLine = "ReflexHelper.getInstance().callFunc(" + className + ".this," + (assetLineCount++) + ")";
         }
         line = line.replace(line.substring(function.startIndex, function.endIndex), newLine);
         int lastJ = line.lastIndexOf(newLine);
@@ -54,10 +56,15 @@ public class ScannedClass
     {
         try
         {
-            fooStream.write(assetFile.toString().getBytes());
+            String cryptedString = AESenc.encrypt(assetFile.toString());
+            fooStream.write(cryptedString.getBytes());
         } catch (IOException e)
+        {
+            e.printStackTrace();
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
     }
+
 }

@@ -12,19 +12,19 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
-preBuild.doFirst {
-    javaexec {
-        classpath += files("../libs/prebuildlib.jar")
-        main = "com.example.CodeCryptoGenerator"
-//        args applicationId, files("src/" + flavor.name).asPath
-    }
+        preBuild.doFirst {
+            javaexec {
+                classpath += files("../libs/prebuildlib.jar")
+                main = "com.example.CodeCryptoGenerator"
+        //        args applicationId, files("src/" + flavor.name).asPath
+            }
 
-}
+        }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

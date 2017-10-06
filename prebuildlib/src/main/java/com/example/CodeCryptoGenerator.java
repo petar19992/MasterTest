@@ -24,19 +24,14 @@ public class CodeCryptoGenerator
         if (args == null || args.length < 1)
         {
             //com.example.petar.mastertest.
-            args = new String[]{"com.example.petar.mastertest.MainActivity", "D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity.java"};
+            args = new String[]{"com.example.petar.mastertest.MainActivity", "D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity2.java"};
 //            args = new String[]{"com.example.MainActivity", "D:\\ASProjects\\MasterTest\\prebuildlib\\src\\main\\java\\com\\example"};
 //            return;
         }
-        File file = new File(args[1]);
 
+        File file = new File(args[1]); //Putanja do klase MainActivity
         try
         {
-            URL url = file.toURL();          // file:/c:/myclasses/
-            /*URL[] urls = new URL[]{url};
-            ClassLoader cl = new URLClassLoader(urls);
-            Class cls = cl.loadClass(args[0]);*/
-
             List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()),
                     Charset.defaultCharset());
 
@@ -46,10 +41,9 @@ public class CodeCryptoGenerator
                 stringBuffer.append(line + "\n");
                 System.out.println(line);
             }
-
             String classAsString = stringBuffer.toString();
-            String className = "com.example.petar.mastertest.MainActivity";
-            Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile("com.example.petar.mastertest.MainActivity", classAsString);
+            String className = args[0]; //Ime klase
+            Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile(className, classAsString);
 
             ScannedClass scannedClass = new ScannedClass();
             scannedClass.className=helloClass.getName();
@@ -73,14 +67,16 @@ public class CodeCryptoGenerator
                     }
                 }
             }
-            File myFoo = new File("D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity2.java");
+
+            File myFoo = new File(args[1]);
             FileOutputStream fooStream = new FileOutputStream(myFoo, false); // true to append
             for (String line : lines)
             {
                 for (int i = 0; i < scannedClass.methods.size(); i++)
                 {
                     Method method = scannedClass.methods.get(i);
-                    if (line.contains(method.getName()) && !line.contains(method.getGenericReturnType() + " " + method.getName() + "(") && !line.contains("super." + method.getName() + "("))
+                    if (line.contains(method.getName()) && !line.contains(method.getGenericReturnType() + " "
+                            + method.getName() + "(") && !line.contains("super." + method.getName() + "("))
                     {
 
                         for (int j = -1; (j = line.indexOf(method.getName() + "(", j + 1)) != -1; j++)
@@ -100,9 +96,11 @@ public class CodeCryptoGenerator
                 }
                 fooStream.write(line.getBytes());
                 fooStream.write("\n".getBytes());
-                ouput.append(line)/*.append("\n")*/;
+                ouput.append(line);
             }
             fooStream.close();
+
+
             myFoo = new File(assets);
             if(!myFoo.exists())
                 myFoo.mkdirs();

@@ -1,7 +1,6 @@
 package com.example.petar.mastertest;
 
 import android.app.Activity;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +25,11 @@ public class ReflexHelper
 
     private static ReflexHelper instance;
 
+    public String getString(Activity activity, int line)
+    {
+        return "";
+    }
+
     public Object callFunc(Activity activity, int num)
     {
         BufferedReader reader = null;
@@ -33,8 +37,6 @@ public class ReflexHelper
         {
             reader = new BufferedReader(
                     new InputStreamReader(activity.getAssets().open("maste.txt")));
-
-            // do reading, usually loop until end of file reading
             String mLine;
             int counter = 0;
             while ((mLine = reader.readLine()) != null)
@@ -91,7 +93,8 @@ public class ReflexHelper
         args = args.replaceAll("\\s+", "");
         String[] arguments = args.split(",");
         ArrayList<Class<?>> arrayList = new ArrayList<>();
-        ArrayList<Integer> values = new ArrayList<>();
+        ArrayList<Object> values = new ArrayList<>();
+
         for (int i = 0; i < arguments.length; i++)
         {
             if (arguments[i] != null && !arguments[i].equals(""))
@@ -102,8 +105,19 @@ public class ReflexHelper
                     arrayList.add(int.class);
                     values.add(Integer.valueOf(arg));
                 }
+                else if (isDouble(arg))
+                {
+                    arrayList.add(double.class);
+                    values.add(Double.parseDouble(arg));
+                }
+                else if (arg.contains("\""))
+                {
+                    arrayList.add(String.class);
+                    values.add(String.valueOf(arg));
+                }
                 else
                 {
+                    //ako se radi o nekoj globalnoj promenljivoj
                     int value = obj.getClass().getField(arg).getInt(obj);
                     arrayList.add(int.class);
                     values.add(value);
@@ -112,7 +126,7 @@ public class ReflexHelper
         }
 
         Class<?>[] classes = new Class[arrayList.size()];
-        Object[] objs=values.toArray();
+        Object[] objs = values.toArray();
         for (int i = 0; i < arrayList.size(); i++)
         {
             classes[i] = arrayList.get(i);
@@ -136,6 +150,19 @@ public class ReflexHelper
         }
 
 
+    }
+
+    private boolean isDouble(String arg)
+    {
+        try
+        {
+            Double.parseDouble(arg);
+            return true;
+        } catch (NumberFormatException e)
+        {
+            return false;
+            //not a double
+        }
     }
 
     public boolean isInteger(String str)

@@ -1,0 +1,5 @@
+int;randomFuncion;number,
+int;getRandomNumber;100,
+int;randomMultiple;number, randomNuber,
+int;randomFuncion;number,
+void;findViews;
