@@ -9,7 +9,11 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-public class MainActivity
+/**
+ * Created by PETAR-PC on 12/6/2017.
+ */
+
+public class MainActivity2
         extends Activity
         implements View.OnClickListener
 {
@@ -108,3 +112,4 @@ public class MainActivity
         findViews();
     }
 }
+

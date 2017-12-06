@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,11 +19,12 @@ public class CodeCryptoGenerator
 {
     public static void main(String[] args)
     {
-        String assets="D:\\ASProjects\\MasterTest\\app\\src\\main\\assets";
+        String assets = "D:\\ASProjects\\MasterTest\\app\\src\\main\\assets";
         if (args == null || args.length < 1)
         {
             //com.example.petar.mastertest.
-            args = new String[]{"com.example.petar.mastertest.MainActivity", "D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity2.java"};
+            args = new String[]{"com.example.petar.mastertest.MainActivity2",
+                    "D:\\ASProjects\\MasterTest\\app\\src\\main\\java\\com\\example\\petar\\mastertest\\MainActivity2.java"};
 //            args = new String[]{"com.example.MainActivity", "D:\\ASProjects\\MasterTest\\prebuildlib\\src\\main\\java\\com\\example"};
 //            return;
         }
@@ -46,7 +46,7 @@ public class CodeCryptoGenerator
             Class<?> helloClass = InMemoryJavaCompiler.newInstance().ignoreWarnings().compile(className, classAsString);
 
             ScannedClass scannedClass = new ScannedClass();
-            scannedClass.className=helloClass.getName();
+            scannedClass.className = helloClass.getName();
             scannedClass.realClass = helloClass;
             Field[] fields = helloClass.getDeclaredFields();
             if (fields != null)
@@ -72,9 +72,21 @@ public class CodeCryptoGenerator
             FileOutputStream fooStream = new FileOutputStream(myFoo, false); // true to append
             for (String line : lines)
             {
+                if (line.contains("\""))
+                {
+                    for (int j = -1; (j = line.indexOf("\"", j + 1)) != -1; j++)
+                    {
+                        int nextShow = line.indexOf("\"", j + 1);
+                        String newLine = line.substring(j + 1, nextShow);
+                        Par pair = scannedClass.commitChange(line,newLine,j,nextShow+1);
+                        line = pair.linija;
+                        j = pair.j;
+                    }
+                }
                 for (int i = 0; i < scannedClass.methods.size(); i++)
                 {
                     Method method = scannedClass.methods.get(i);
+                    //Proverimo da li je u toj liniji implementacija funkcije ili je njen poziv
                     if (line.contains(method.getName()) && !line.contains(method.getGenericReturnType() + " "
                             + method.getName() + "(") && !line.contains("super." + method.getName() + "("))
                     {
@@ -102,11 +114,17 @@ public class CodeCryptoGenerator
 
 
             myFoo = new File(assets);
-            if(!myFoo.exists())
+            if (!myFoo.exists())
+            {
                 myFoo.mkdirs();
-            myFoo=new File(assets+"\\maste.txt");
+            }
+            myFoo = new File(assets + "\\maste.txt");
             fooStream = new FileOutputStream(myFoo, false);
             scannedClass.writeAsset(fooStream);
+            fooStream.close();
+            myFoo = new File(assets + "\\strings.txt");
+            fooStream = new FileOutputStream(myFoo, false);
+            scannedClass.writeStrings(fooStream);
             fooStream.close();
 
             System.out.println("PROBAAAAAAAAAAAAAAAAAAAA");

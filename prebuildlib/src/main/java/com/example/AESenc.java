@@ -18,6 +18,10 @@ public class AESenc
     public static String encrypt(String data) throws Exception
     {
         Key key = generateKey();
+        return encrypt(data,key);
+    }
+    public static String encrypt(String data, Key key) throws Exception
+    {
         Cipher c = Cipher.getInstance(ALGO);
         c.init(Cipher.ENCRYPT_MODE, key);
         byte[] encVal = c.doFinal(data.getBytes());
@@ -36,4 +40,9 @@ public class AESenc
     {
         return new SecretKeySpec(keyValue, ALGO);
     }
+    private static Key generateKey(String password) throws Exception
+    {
+        return new SecretKeySpec(password.getBytes("UTF-8"), ALGO);
+    }
+
 }

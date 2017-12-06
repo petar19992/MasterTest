@@ -27,6 +27,38 @@ public class ReflexHelper
 
     public String getString(Activity activity, int line)
     {
+        BufferedReader reader = null;
+        try
+        {
+            reader = new BufferedReader(
+                    new InputStreamReader(activity.getAssets().open("strings.txt")));
+            String mLine;
+            int counter = 0;
+            while ((mLine = reader.readLine()) != null)
+            {
+                if (counter++ == line)
+                {
+                    return mLine;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            //log the exception
+        } finally
+        {
+            if (reader != null)
+            {
+                try
+                {
+                    reader.close();
+                } catch (IOException e)
+                {
+                    //log the exception
+                }
+            }
+        }
         return "";
     }
 

@@ -75,12 +75,12 @@
         android:text="Fn (2)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/factorielBtn"
-        app:layout_constraintRight_toLeftOf="@+id/button3"
+        app:layout_constraintRight_toLeftOf="@+id/randomFunc"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.501"/>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/randomFunc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
